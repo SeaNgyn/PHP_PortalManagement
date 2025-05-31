@@ -1,6 +1,6 @@
 -- TẠO SCHEMA VÀ SỬ DỤNG
- CREATE DATABASE IF NOT EXISTS db_php_ver4 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
- USE db_php_ver4;
+--CREATE DATABASE IF NOT EXISTS db_php_ver4 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+--USE db_php_ver4;
 
 -- BẢNG MÔN HỌC
 CREATE TABLE tn_mon_hoc (
