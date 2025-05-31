@@ -1,0 +1,41 @@
+# 📁 1. Ignore thư mục cấu hình bí mật
+#configuration/
+# Lý do: Có thể chứa thông tin nhạy cảm như:
+# - Cấu hình cơ sở dữ liệu (username, password)
+# - Cấu hình server, token, API key
+# - Không nên đưa lên Git để tránh lộ bảo mật
+
+# 📁 2. Ignore thư viện PHP bên ngoài cài bằng Composer
+#/vendor/
+#/composer.lock
+# Lý do:
+# - Các thư viện này có thể cài lại bằng `composer install`
+# - Tránh làm nặng repo và xung đột version
+
+# 📄 3. Ignore các file hệ điều hành tạo tự động
+.DS_Store
+Thumbs.db
+# Lý do:
+# - Do hệ điều hành (macOS hoặc Windows) sinh ra
+# - Không ảnh hưởng đến mã nguồn, nhưng gây rác
+
+# 📄 4. Ignore file dump database
+#*.sql
+# Lý do:
+# - File database thường rất lớn hoặc chứa dữ liệu nhạy cảm
+# - Có thể backup riêng, không nên commit
+
+# 📄 5. Ignore file tạm, log
+*.log
+*.tmp
+
+# 📁 6. Ignore thư mục của các IDE phổ biến
+.vscode/
+.idea/
+*.code-workspace
+# Lý do:
+# - Chứa cấu hình cá nhân của mỗi lập trình viên
+# - Không liên quan đến mã nguồn dự án
+
+# 📁 7. Ignore kết quả test tạm (nếu có)
+test/output/
