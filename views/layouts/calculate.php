@@ -1,23 +1,23 @@
-<?php 
-function Ks($soLuongSv, $loaiLop,$maLopHp)
+<?php
+function Ks($soLuongSv, $loaiLop, $maLopHp)
 {
 
- //$soGv = $countGvMap[$maLopHp] ?? 1; // mặc định là 1 nếu không có trong map
- $soGv=$maLopHp;
- 
+    //$soGv = $countGvMap[$maLopHp] ?? 1; // mặc định là 1 nếu không có trong map
+    $soGv = $maLopHp;
+
     switch ($loaiLop) {
-        case str_contains($loaiLop,'TH'):
+        case str_contains($loaiLop, 'TH'):
             $hs1 = ($soLuongSv < 15) ? 0.8 : (($soLuongSv < 20) ? 1.0 : 1.2);
-            $hs = $hs1/$soGv; 
+            $hs = $hs1 / $soGv;
             return $hs;
             break;
         // case "'str_contains($loaiLop,'LT')'":
-            case 'LT':
+        case 'LT':
             // Xử lý theo lớp LT
             $hs = ($soLuongSv <= 40) ? 1.0 : (($soLuongSv <= 60) ? 1.1 : (($soLuongSv <= 80) ? 1.2 : (($soLuongSv <= 100) ? 1.3 : (($soLuongSv <= 120) ? 1.4 : 1.5))));
             return $hs;
             break;
-        case str_contains($loaiLop,'BT'):
+        case str_contains($loaiLop, 'BT'):
             $hs = ($soLuongSv <= 40) ? 1.0 : (($soLuongSv <= 60) ? 1.1 : (($soLuongSv <= 80) ? 1.2 : (($soLuongSv <= 100) ? 1.3 : (($soLuongSv <= 120) ? 1.4 : 1.5))));
             return $hs;
             break;
@@ -46,10 +46,10 @@ function Kt($thu, $tiet)
 }
 
 
-function calculateTimeToStudy($phanBoTc, $soLuongSv, $ngonNguGiangDay, $thu, $tiet, $loaiLop,$maLopHp)
+function calculateTimeToStudy($phanBoTc, $soLuongSv, $ngonNguGiangDay, $thu, $tiet, $loaiLop, $maLopHp)
 {
     // Gọi hàm tính hệ số
-    $ks = Ks($soLuongSv, $loaiLop,$maLopHp);
+    $ks = Ks($soLuongSv, $loaiLop, $maLopHp);
     $kn = Kn($ngonNguGiangDay);
     $kt = Kt($thu, $tiet);
 
@@ -64,13 +64,13 @@ function calculateTimeToStudy($phanBoTc, $soLuongSv, $ngonNguGiangDay, $thu, $ti
     $tinChiSplit = $matches[0];
     $count = count($tinChiSplit);
 
-   if($ngonNguGiangDay=="Tiếng Việt"){
-     $C = 1.5;
-   }else{
-    $C = 2;
-   }
-$G1 = min($ks * $kn * $kt,$C);
-$G2 = min(($ks * $kn * $kt)/2,$C);
+    if ($ngonNguGiangDay == "Tiếng Việt") {
+        $C = 1.5;
+    } else {
+        $C = 2;
+    }
+    $G1 = min($ks * $kn * $kt, $C);
+    $G2 = min(($ks * $kn * $kt) / 2, $C);
     if ($soLuongSv <= 15) {
         switch ($count) {
             case 4:
@@ -100,13 +100,10 @@ $G2 = min(($ks * $kn * $kt)/2,$C);
                 break;
             case 3:
                 $calTC = $tinChiSplit[0] + $tinChiSplit[$count - 2];
-                return $calTC*  $G1;
+                return $calTC *  $G1;
                 break;
             default:
                 return "no data";
         }
     }
-
-
 }
-?>

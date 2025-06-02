@@ -44,7 +44,14 @@ try {
   $statement->setFetchMode(PDO::FETCH_ASSOC);
   $monhocs = $statement->fetchAll();
 
-  $sql = "SELECT * FROM tn_giang_vien limit $begin,$limit";
+  $sql = "SELECT gv.id AS giang_vien_id,gv.Name,
+    COUNT(DISTINCT mlhp.id) AS so_mon_day
+    FROM tn_giang_vien gv
+    JOIN tn_giangvien_malophp gvmlhp ON gv.id = gvmlhp.giang_vien_id
+    JOIN tn_ma_lop_hp mlhp ON mlhp.id = gvmlhp.id_ma_lop_hp
+    JOIN tn_mon_hoc mh ON mh.id = mlhp.id_mon_hoc
+    GROUP BY gv.id, gv.Name
+    ORDER BY so_mon_day DESC limit $begin,$limit";
   $statement = $connection->prepare($sql);
   $statement->execute();
   $gvs = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -92,6 +99,7 @@ foreach ($results as $row) {
             <tr style="background-color: #f5f5f5; color: 000;">
               <th>STT</th>
               <th>Giảng viên</th>
+              <th>Số môn dạy</th>
               <th>Thời gian dạy</th>
             </tr>
           </thead>
@@ -126,21 +134,25 @@ foreach ($results as $row) {
 
               $totaltimeMap[$gvId]['tong_gio'] += (float) $gioDay;
             }
-            foreach ($gvs as $gvif) {
-              $gvId = $gvif['id'] ?? '';
-              $GiangVienName = $gvif['Name'] ?? '';
-              $tongGio = isset($totaltimeMap[$gvId]) ? $totaltimeMap[$gvId]['tong_gio'] : 0;
-
-              echo '<tr>';
-              echo "<td>$gvId</td>";
-              echo "<td>$GiangVienName</td>";
-              echo "<td>$tongGio</td>";
-              echo '</tr>';
-            }
+            foreach($gvs as $gvif){
+                      $gvId = $gvif['giang_vien_id'] ?? '';
+                      $GiangVienName = $gvif['Name'] ?? '';
+                      $soMon = $gvif['so_mon_day'] ?? '';
+                      $tongGio = isset($totaltimeMap[$gvId]) ? $totaltimeMap[$gvId]['tong_gio'] : 0;
+                  
+                      echo '<tr>';
+                      echo "<td>$gvId</td>";
+                      echo "<td>$GiangVienName</td>";
+                      echo "<td>$soMon</td>";
+                      echo "<td>$tongGio</td>";
+                      echo '</tr>';
+                  }
             ?>
           </tbody>
 
         </table>
+        <a href="../layouts/genderAll.php" class="btn btn-danger" target="_blank">Mở PDF</a>
+
         <div style="text-align: center;">
 
           <?php

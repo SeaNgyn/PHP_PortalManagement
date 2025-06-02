@@ -1,6 +1,9 @@
-<?php include '../layouts/header.php';
+<?php
+error_reporting(~E_NOTICE);
+include '../layouts/header.php';
 $giangVienId = $_SESSION['UserId'];
 ?>
+
 
 <div id="divMain" class="row row2">
     <div class="col-sm-2 sidebar" style="background-color:#2e43d1;padding-right: 0">
@@ -9,6 +12,14 @@ $giangVienId = $_SESSION['UserId'];
     <div class="col-sm-10 content" style="background-color:rgb(252, 252, 252);">
         <div id="modTitle" class="module-title" style="height:25px;margin-left:-15px;">Giảng dạy</div>
         <?php include '../layouts/dash.php'; ?>
+        <?php
+        if ($_SESSION['VaiTro'] == 1 && $giangVienId != 110) {
+        ?>
+            <a href="../layouts/gender.php" class="btn btn-danger" target="_blank">Tải PDF</a>
+        <?php
+        }
+        ?>
+
         <!-- Phân trang -->
         <div style="text-align: center;">
             <?php
@@ -33,6 +44,7 @@ $giangVienId = $_SESSION['UserId'];
             $row_count = count($monhocs);
             $trang = ceil($row_count / 10);
             ?>
+
             <ul class="pagination">
                 <?php
                 for ($i = 1; $i <= $trang; $i++) {
@@ -42,6 +54,7 @@ $giangVienId = $_SESSION['UserId'];
                 }
                 ?>
             </ul>
+
         </div>
     </div>
 </div>

@@ -3,7 +3,7 @@
 define('DATABASE_SERVER', 'localhost');          // Địa chỉ host của MySQL (localhost hoặc IP)
 define('DATABASE_USER', '');                 // Tên người dùng MySQL
 define('DATABASE_PASSWORD', '');   // Mật khẩu MySQL
-define('DATABASE_NAME', '');                // Tên cơ sở dữ liệu cần kết nối
+define('DATABASE_NAME', 'KhoaVatLy');                // Tên cơ sở dữ liệu cần kết nối
 define('DATABASE_PORT', '3306');                 // Cổng MySQL đang lắng nghe (mặc định là 3306)
 
 
@@ -55,7 +55,8 @@ try {
 // $myCar->drive();        // Gọi phương thức
 
 //------------------------------------------------------------------
-// ✅ Kết luận ngắn:
+// Kết luận ngắn:
 // Dùng :: khi bạn không cần khởi tạo đối tượng, thường là với static hoặc const.
 
 // Dùng -> khi bạn đang làm việc với một đối tượng cụ thể, đã được tạo bằng new.
+?>

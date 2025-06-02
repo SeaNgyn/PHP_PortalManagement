@@ -1,11 +1,12 @@
 <?php
+session_start();
 include '../layouts/calculate.php';
+include '../../configuration/database.php';
 if (isset($_SESSION['hoc_ky'])) {
     $semesterName = (int)$_SESSION['hoc_ky'] ? (int)$_SESSION['hoc_ky'] : 1;
     //echo "Học kỳ đã chọn: " . $semesterName;
 }
 $giangVienId = $_SESSION['UserId'];
-include '../../configuration/database.php';
 if (isset($_GET['trang'])) {
     $page = $_GET['trang'];
 } else {
@@ -45,11 +46,11 @@ try {
     $count = "SELECT 
     mlhp.ten_ma_lop_hp, 
     COUNT(gvmlhp.giang_vien_id) AS so_giang_vien
-FROM 
+    FROM 
     tn_ma_lop_hp mlhp
-JOIN 
+    JOIN 
     tn_giangvien_malophp gvmlhp ON mlhp.id = gvmlhp.id_ma_lop_hp
-GROUP BY 
+    GROUP BY 
     mlhp.ten_ma_lop_hp;";
     // $statement = $connection->prepare($sql);
     // $statement->execute();
@@ -75,14 +76,14 @@ foreach ($results as $row) {
 <!-- Danh sách môn học -->
 <div class="panel panel-primary " style="margin-top: 20px; height: auto; ">
     <div class="panel-heading"
-        style="height: auto; font-size: 20px; font-family: Helvetica; color: white;background-color:blue">Danh sách môn
+        style="height: auto;  font-size: 20px; font-family: DejaVu Sans, sans-serif; color: white;background-color:blue">Danh sách môn
         học được phân
         công <?php echo $_SESSION['tenGiangVien'] != 'Admin' ? "của " .  $_SESSION['tenGiangVien'] : 'của tất cả giảng viên'; ?>: </div>
     <div class="panel-body" style="height: auto;">
         <table class="table table-striped" id="courseTable">
             <thead>
                 <tr style="background-color: #f5f5f5; color: 000;">
-                    <th>STT</th>
+                    <!-- <th>STT</th> -->
                     <th>Mã học phần</th>
                     <th>Tên học phần</th>
                     <th>Số tín chỉ</th>
@@ -109,7 +110,7 @@ foreach ($results as $row) {
                 $totaltimeMap = [];
 
                 foreach ($monhocs as $monhoc) {
-                    $STT = $monhoc['STT'] ?? '';
+                    //$STT = $monhoc['STT'] ?? '';
                     $maHp = $monhoc['ma_mon'] ?? '';
                     $tenHp = $monhoc['ten_mon'] ?? '';
                     $soTc = $monhoc['so_tin_chi'] ?? '';
@@ -130,7 +131,7 @@ foreach ($results as $row) {
 
 
                     echo '<tr>';
-                    echo "<td>$STT</td>";
+                    //echo "<td>$STT</td>";
                     echo "<td>$maHp</td>";
                     echo "<td>$tenHp</td>";
                     echo "<td >$soTc</td>";
@@ -154,13 +155,15 @@ foreach ($results as $row) {
                     echo '</tr>';
                     $gioDay = calculateTimeToStudy($phanBoTc, $soLuongSv, $ngonNguGiangDay, $thu, $tiet, $loaiLop, $countGvMap[$maLopHp]);
 
-                    if (!isset($totaltimeMap[$gvId])) {
-                        $totaltimeMap[$gvId] = [
-                            'Name' => $giangVien,
-                            'tong_gio' => 0
-                        ];
+                    if ($_SESSION['VaiTro'] == 1 && $_SESSION['UserId'] != 110) {
+                        if (!isset($totaltimeMap[$gvId])) {
+                            $totaltimeMap[$gvId] = [
+                                'Name' => $giangVien,
+                                'tong_gio' => 0
+                            ];
+                        }
+                        $totaltimeMap[$gvId]['tong_gio'] += $gioDay;
                     }
-                    $totaltimeMap[$gvId]['tong_gio'] += $gioDay;
                 }
 
                 //echo '<a href="index.php">Click here to back Home to upload file</a>';
@@ -179,12 +182,9 @@ foreach ($results as $row) {
             </tfoot>
 
         </table>
-
-
-
     </div>
-
 </div>
+
 
 <?php
 
