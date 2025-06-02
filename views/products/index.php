@@ -16,34 +16,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       throw new Exception("Database connection is not established.");
     }
 
-    // Chuẩn bị câu lệnh SQL kiểm tra đăng nhập
-    $sql = "SELECT * FROM tn_tai_khoan WHERE email = ? AND mat_khau = ?";
+    // Tìm theo email
+    $sql = "SELECT * FROM tn_tai_khoan WHERE email = ?";
     $statement = $connection->prepare($sql);
-    $statement->execute([$taikhoan, $matkhau]);
+    $statement->execute([$taikhoan]);
     $account = $statement->fetch(PDO::FETCH_ASSOC);
-    if ($account) {
-      $_SESSION['VaiTro'] = $account['vai_tro'];
-      $_SESSION['TrangThai'] = $account['trang_thai'];
-      $_SESSION['UserId'] = $account['giang_vien_id'] ?? $account['id']; // Nếu không có giang_vien_id, dùng id tài khoản
 
-      // Nếu là giảng viên thì lấy thông tin giảng viên
-      if ($_SESSION['VaiTro'] == 1 && !empty($account['giang_vien_id'])) {
-        $sql = "SELECT * FROM giang_vien WHERE id = ?";
-        $statement = $connection->prepare($sql);
-        $statement->execute([$account['giang_vien_id']]);
-        $gv = $statement->fetch(PDO::FETCH_ASSOC);
-        $_SESSION['tenGiangVien'] = $gv['Name'] ?? '';
-      } else {
-        $_SESSION['tenGiangVien'] = 'Admin';
+    if ($account) {
+      $matKhauDB = $account['mat_khau'];
+      $isVerified = false;
+
+      // Ưu tiên dùng password_verify nếu có vẻ là hash
+      if (strlen($matKhauDB) > 30 && password_verify($matkhau, $matKhauDB)) {
+        $isVerified = true;
+      }
+      // Nếu không phải hash, kiểm tra chuỗi thuần
+      else if ($matkhau === $matKhauDB) {
+        $isVerified = true;
+
+        // Cập nhật lại mật khẩu thành bản mã hóa
+        $newHash = password_hash($matkhau, PASSWORD_DEFAULT);
+        $update = $connection->prepare("UPDATE tn_tai_khoan SET mat_khau = ? WHERE id = ?");
+        $update->execute([$newHash, $account['id']]);
       }
 
+      if ($isVerified) {
+        // Đăng nhập thành công
+        $_SESSION['VaiTro'] = $account['vai_tro'];
+        $_SESSION['TrangThai'] = $account['trang_thai'];
+        $_SESSION['AccountId'] = $account['id'];
+        $_SESSION['UserId'] = $account['giang_vien_id'] ?? $account['id'];
 
-      // Chuyển hướng sang trang home.php nếu đăng nhập thành công
-      header('Location: home.php');
-      exit;
-    } else {
-      $error = "Tên đăng nhập hoặc mật khẩu không đúng.";
+        if ($_SESSION['VaiTro'] == 1 && !empty($account['giang_vien_id'])) {
+          $sql = "SELECT * FROM tn_giang_vien WHERE id = ?";
+          $statement = $connection->prepare($sql);
+          $statement->execute([$account['giang_vien_id']]);
+          $gv = $statement->fetch(PDO::FETCH_ASSOC);
+          $_SESSION['tenGiangVien'] = $gv['Name'] ?? '';
+        } else {
+          $_SESSION['tenGiangVien'] = 'Admin';
+        }
+
+        header('Location: home.php');
+        exit;
+      }
     }
+
+    $error = "Tên đăng nhập hoặc mật khẩu không đúng.";
   } catch (PDOException $e) {
     $error = "Lỗi: " . $e->getMessage();
   } catch (Exception $e) {
@@ -51,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="vi">

@@ -1,17 +1,17 @@
 <?php
 // Định nghĩa các hằng số cấu hình kết nối
 define('DATABASE_SERVER', 'localhost');          // Địa chỉ host của MySQL (localhost hoặc IP)
-define('DATABASE_USER', '');                 // Tên người dùng MySQL
-define('DATABASE_PASSWORD', '');   // Mật khẩu MySQL
-define('DATABASE_NAME', '');                // Tên cơ sở dữ liệu cần kết nối
-define('DATABASE_PORT', '3306');                 // Cổng MySQL đang lắng nghe (mặc định là 3307)
+define('DATABASE_USER', 'root');                 // Tên người dùng MySQL
+define('DATABASE_PASSWORD', 'Mysql18032003.');   // Mật khẩu MySQL
+define('DATABASE_NAME', 'db_php_ver4');                // Tên cơ sở dữ liệu cần kết nối
+define('DATABASE_PORT', '3306');                 // Cổng MySQL đang lắng nghe (mặc định là 3306)
 
 
 $connection = null;
 try {
     // Tạo đối tượng PDO với DSN (Data Source Name) gồm host, port, và tên database
     $connection = new PDO(
-        "mysql:host=" . DATABASE_SERVER . ";port=" . DATABASE_PORT . ";dbname=" . DATABASE_NAME,
+        "mysql:host=" . DATABASE_SERVER . ";port=" . DATABASE_PORT . ";dbname=" . DATABASE_NAME . ";charset=utf8mb4",
         DATABASE_USER,
         DATABASE_PASSWORD
     );
