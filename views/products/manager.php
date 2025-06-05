@@ -3,7 +3,7 @@ error_reporting(~E_NOTICE);
 if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
-
+$hocKy = $_SESSION['hoc_ky'];
 // Kiểm tra vai trò trước khi có output
 if (!isset($_SESSION['VaiTro']) || $_SESSION['VaiTro'] != 2) {
   header('Location: ../products/home.php');
@@ -32,8 +32,9 @@ try {
   }
   $sql = "SELECT * from tn_giang_vien gv 
       join tn_giangvien_malophp gvmlhp on gv.id = gvmlhp.giang_vien_id 
-      join tn_ma_lop_hp mlhp on mlhp.id = gvmlhp.id_ma_lop_hp 
-      join tn_mon_hoc mh on mlhp.id_mon_hoc = mh.id
+      join tn_ma_lop_hp mlhp on mlhp.id = gvmlhp.id_ma_lop_hp
+      join tn_hocky_malophp hkmlhp on mlhp.id = hkmlhp.malophp_id
+      join tn_mon_hoc mh on mlhp.id_mon_hoc = mh.id where hkmlhp.hocky_id = $hocKy
       -- LIMIT $begin,10;
       ";
   if ($connection === null) {
@@ -49,7 +50,9 @@ try {
     FROM tn_giang_vien gv
     JOIN tn_giangvien_malophp gvmlhp ON gv.id = gvmlhp.giang_vien_id
     JOIN tn_ma_lop_hp mlhp ON mlhp.id = gvmlhp.id_ma_lop_hp
+    join tn_hocky_malophp hkmlhp on mlhp.id = hkmlhp.malophp_id
     JOIN tn_mon_hoc mh ON mh.id = mlhp.id_mon_hoc
+    where hkmlhp.hocky_id = $hocKy
     GROUP BY gv.id, gv.Name
     ORDER BY so_mon_day DESC limit $begin,$limit";
   $statement = $connection->prepare($sql);

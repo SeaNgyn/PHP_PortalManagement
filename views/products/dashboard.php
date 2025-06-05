@@ -2,6 +2,7 @@
 error_reporting(~E_NOTICE);
 include '../layouts/header.php';
 $giangVienId = $_SESSION['UserId'];
+$hocKy = $_SESSION['hoc_ky'];
 ?>
 
 
@@ -27,15 +28,17 @@ $giangVienId = $_SESSION['UserId'];
             if ($_SESSION['VaiTro'] == 1 && $giangVienId != 110) {
                 $sql = "SELECT * from tn_giang_vien gv 
                 join tn_giangvien_malophp gvmlhp on gv.id = gvmlhp.giang_vien_id 
-                join tn_ma_lop_hp mlhp on mlhp.id = gvmlhp.id_ma_lop_hp 
-                join tn_mon_hoc mh on mlhp.id_mon_hoc = mh.id where gvmlhp.giang_vien_id = $giangVienId";
+                join tn_ma_lop_hp mlhp on mlhp.id = gvmlhp.id_ma_lop_hp
+                join tn_hocky_malophp hkmlhp on mlhp.id = hkmlhp.malophp_id 
+                join tn_mon_hoc mh on mlhp.id_mon_hoc = mh.id where gvmlhp.giang_vien_id = $giangVienId AND hkmlhp.hocky_id = $hocKy";
                 $statement = $connection->prepare($sql);
                 $statement->execute();
             } else {
                 $sql = "SELECT * from tn_giang_vien gv 
                 join tn_giangvien_malophp gvmlhp on gv.id = gvmlhp.giang_vien_id 
                 join tn_ma_lop_hp mlhp on mlhp.id = gvmlhp.id_ma_lop_hp 
-                join tn_mon_hoc mh on mlhp.id_mon_hoc = mh.id";
+                join tn_hocky_malophp hkmlhp on mlhp.id = hkmlhp.malophp_id 
+                join tn_mon_hoc mh on mlhp.id_mon_hoc = mh.id where hkmlhp.hocky_id = $hocKy";
                 $statement = $connection->prepare($sql);
                 $statement->execute();
             }

@@ -1,5 +1,6 @@
 <?php 
 include '../../configuration/database.php'; 
+$hocKy = $_SESSION['hoc_ky'];
 // $monhocs = [];
 $limit = 10;
 if (isset($_GET['trang'])){
@@ -25,9 +26,10 @@ try {
         $sql = "SELECT *
         FROM tn_mon_hoc mh
         JOIN tn_ma_lop_hp mlhp ON mh.id = mlhp.id_mon_hoc
+        JOIN tn_hocky_malophp hkmlhp on mlhp.id = hkmlhp.malophp_id
         LEFT JOIN tn_giangvien_malophp gvmlhp ON mlhp.id = gvmlhp.id_ma_lop_hp
         LEFT JOIN tn_giang_vien gv ON gvmlhp.giang_vien_id = gv.id
-        WHERE mh.id = $id_mon ;";
+        WHERE mh.id = $id_mon and hkmlhp.hocky_id = $hocKy;";
                 // Lấy thông tin môn học
                 // $sqlMon = "SELECT * FROM mon_hoc WHERE id = ?";
                 $statement = $connection->prepare($sql);
@@ -38,9 +40,10 @@ try {
         $sql = "SELECT *
             FROM tn_mon_hoc mh
             JOIN tn_ma_lop_hp mlhp ON mh.id = mlhp.id_mon_hoc
+            JOIN tn_hocky_malophp hkmlhp on mlhp.id = hkmlhp.malophp_id
             LEFT JOIN tn_giangvien_malophp gvmlhp ON mlhp.id = gvmlhp.id_ma_lop_hp
     LEFT JOIN tn_giang_vien gv ON gvmlhp.giang_vien_id = gv.id
-WHERE mh.id = $id_mon  LIMIT $begin, $limit;";
+WHERE mh.id = $id_mon and hkmlhp.hocky_id = $hocKy LIMIT $begin, $limit;";
         // Lấy thông tin môn học
         // $sqlMon = "SELECT * FROM mon_hoc WHERE id = ?";
         $statement = $connection->prepare($sql);

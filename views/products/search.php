@@ -1,5 +1,6 @@
 <?php include '../layouts/header.php'; ?>
 <?php
+$hocKy = $_SESSION['hoc_ky'];
 $limit = 15;
 include '../../configuration/database.php';
 if (isset($_GET['trang'])) {
